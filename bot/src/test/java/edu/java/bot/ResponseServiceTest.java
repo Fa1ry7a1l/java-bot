@@ -194,7 +194,7 @@ class ResponseServiceTest {
     }
 
     @Test
-    @DisplayName("Получение сообщения /untrack, с слишком большим номером")
+    @DisplayName("Получение сообщения /untrack, с слишком маленьким номером")
     void givenResponseService_whenReceiveUntrackMessageWithTooSmallNumber_thenReturnSpecialMessage() {
         when(message.text()).thenReturn("/untrack 0");
         ArrayList<URI> uris = new ArrayList<>();

@@ -8,8 +8,6 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import edu.java.bot.commands.CommandHandler;
 import edu.java.bot.configuration.ApplicationConfig;
-import edu.java.bot.entity.repository.UserLinksRepository;
-import edu.java.bot.entity.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +18,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Bot implements UpdatesListener {
 
-    static final Logger LOGGER = LogManager.getLogger(Bot.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(Bot.class.getName());
+    public static final String SPLIT_TOO_LONG_ANSWERS_REGEX = "(?<=\\G.{250})";
 
     private final TelegramBot telegramBot;
 
@@ -29,13 +28,11 @@ public class Bot implements UpdatesListener {
     private final ResponseService responseService;
 
     @Autowired
-    public Bot(ApplicationConfig config) {
+    public Bot(ApplicationConfig config, CommandHandler commandHandler, ResponseService responseService) {
         this.telegramBot = new TelegramBot(config.telegramToken());
-        UserRepository userRepository = new UserRepository();
-        UserLinksRepository userLinksRepository = new UserLinksRepository();
 
-        commandHandler = new CommandHandler(userLinksRepository);
-        this.responseService = new ResponseService(userRepository, commandHandler);
+        this.commandHandler = commandHandler;
+        this.responseService = responseService;
     }
 
     @PostConstruct
@@ -49,8 +46,7 @@ public class Bot implements UpdatesListener {
                     + e.response().description() + "'");
             } else {
 
-                LOGGER.error("Вероятно, ошибка сети");
-                LOGGER.error(e);
+                LOGGER.error("Вероятно, ошибка сети", e);
             }
         });
 
@@ -64,7 +60,7 @@ public class Bot implements UpdatesListener {
                 LOGGER.info("Сообщение : " + update.message().text());
 
                 var response = responseService.getAnswer(update);
-                var responseArray = response.split("(?<=\\G.{250})");
+                var responseArray = response.split(SPLIT_TOO_LONG_ANSWERS_REGEX);
                 for (var message : responseArray) {
                     SendMessage sendMessage =
                         new SendMessage(update.message().chat().id(), message);

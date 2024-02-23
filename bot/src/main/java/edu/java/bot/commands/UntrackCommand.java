@@ -43,7 +43,7 @@ public class UntrackCommand extends Command {
                 + "при помощи команды /list\n";
         }
 
-        userLinks.remove(linkNumber);
+        userLinks.remove(linkNumber - 1);
 
         return "Успешно убрали ссылку\n";
     }

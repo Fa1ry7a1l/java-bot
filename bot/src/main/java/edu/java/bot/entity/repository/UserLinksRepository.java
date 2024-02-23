@@ -3,13 +3,15 @@ package edu.java.bot.entity.repository;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserLinksRepository {
 
     public UserLinksRepository() {
     }
 
-    HashMap<Long, ArrayList<URI>> links = new HashMap<>();
+    private final HashMap<Long, ArrayList<URI>> links = new HashMap<>();
 
     public HashMap<Long, ArrayList<URI>> getLinks() {
         return links;
