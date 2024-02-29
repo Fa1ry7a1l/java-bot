@@ -6,10 +6,6 @@ on:
     paths:
       - .github/workflows/bot.yml
       - bot/**
-  push:
-    paths:
-      - .github/workflows/bot.yml
-      - bot/**
 
 jobs:
   build:
@@ -17,7 +13,7 @@ jobs:
     name: Build
     permissions:
       packages: write
-      pull-requests: write
+      pull-requests: write 
 
     steps:
       - uses: actions/checkout@v4
