@@ -1,4 +1,4 @@
-package edu.java.bot.entity;
+package edu.java.entity;
 
 public class User {
     //потребуется для бд

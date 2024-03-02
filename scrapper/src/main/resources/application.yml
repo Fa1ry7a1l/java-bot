@@ -6,6 +6,11 @@ app:
   clients:
     gitHub: https://api.github.com
     stackOverflow: https://api.stackexchange.com/2.3
+    bot: http://localhost:8090
+
+springdoc:
+  swagger-ui:
+    path=/swagger-ui
 
 spring:
   application:

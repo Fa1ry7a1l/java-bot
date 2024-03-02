@@ -43,11 +43,13 @@
         <!-- Linters -->
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
         <checkstyle.version>10.12.7</checkstyle.version>
+        <springdoc-version>1.7.0</springdoc-version>
     </properties>
 
     <modules>
         <module>bot</module>
         <module>scrapper</module>
+        <module>sharedDTOs</module>
     </modules>
 
     <dependencyManagement>
@@ -122,6 +124,13 @@
             <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

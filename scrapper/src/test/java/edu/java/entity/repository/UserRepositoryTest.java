@@ -1,6 +1,6 @@
-package edu.java.bot.entity.repository;
+package edu.java.entity.repository;
 
-import edu.java.bot.entity.User;
+import edu.java.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
