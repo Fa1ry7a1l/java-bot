@@ -23,6 +23,9 @@ class UserLinksRepositoryTest {
         URI vk = URI.create("https://vk.com");
         URI youtube = URI.create("https://youtube.com");
 
+        userLinksRepository.createUser(1L);
+        userLinksRepository.createUser(3L);
+
         userLinksRepository.add(1L, vk);
         userLinksRepository.add(1L, youtube);
 
@@ -42,6 +45,10 @@ class UserLinksRepositoryTest {
         ArrayList<URI> firstUserLinksTest = new ArrayList<>();
         firstUserLinksTest.add(vk);
         firstUserLinksTest.add(youtube);
+
+
+        userLinksRepository.createUser(1L);
+        userLinksRepository.createUser(3L);
 
         userLinksRepository.add(1L, vk);
         userLinksRepository.add(1L, youtube);
