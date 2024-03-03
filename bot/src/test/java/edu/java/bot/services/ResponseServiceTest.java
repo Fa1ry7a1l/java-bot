@@ -226,73 +226,7 @@ class ResponseServiceTest {
         Assertions.assertEquals("Успешно добавили\n", res);
     }
 
-    @Test
-    @DisplayName("Получение сообщения /untrack, с корректным номером")
-    void givenResponseService_whenReceiveUntrackMessageWithCorrectNumber_thenReturnSpecialMessage() {
-        when(message.text()).thenReturn("/untrack 1");
-        ArrayList<URI> uris = new ArrayList<>();
-        uris.add(URI.create("https://vk.com"));
-        uris.add(URI.create("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
-        when(userLinksRepository.getLinks(userId)).thenReturn(uris);
-        clearInvocations(userRepository);
 
-        var res = responseService.getAnswer(update);
-        Assertions.assertEquals(uris.size(), 1);
-
-        Assertions.assertEquals("Успешно убрали ссылку\n", res);
-    }
-
-    @Test
-    @DisplayName("Получение сообщения /untrack, с слишком большим номером")
-    void givenResponseService_whenReceiveUntrackMessageWithTooBigNumber_thenReturnSpecialMessage() {
-        when(message.text()).thenReturn("/untrack 125");
-        ArrayList<URI> uris = new ArrayList<>();
-        uris.add(URI.create("https://vk.com"));
-        uris.add(URI.create("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
-        when(userLinksRepository.getLinks(userId)).thenReturn(uris);
-        clearInvocations(userRepository);
-
-        var res = responseService.getAnswer(update);
-        Assertions.assertEquals(uris.size(), 2);
-
-        Assertions.assertEquals("Вы ввели число 125. "
-            + "У вас нет ссылки под таким номером. "
-            + "Полный список ссылок с номерами можно посмотреть "
-            + "при помощи команды /list\n", res);
-    }
-
-    @Test
-    @DisplayName("Получение сообщения /untrack, с слишком маленьким номером")
-    void givenResponseService_whenReceiveUntrackMessageWithTooSmallNumber_thenReturnSpecialMessage() {
-        when(message.text()).thenReturn("/untrack 0");
-        ArrayList<URI> uris = new ArrayList<>();
-        uris.add(URI.create("https://vk.com"));
-        uris.add(URI.create("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
-        when(userLinksRepository.getLinks(userId)).thenReturn(uris);
-        clearInvocations(userRepository);
-
-        var res = responseService.getAnswer(update);
-        Assertions.assertEquals(uris.size(), 2);
-
-        Assertions.assertEquals("Вы ввели число 0. "
-            + "У вас нет ссылки под таким номером. "
-            + "Полный список ссылок с номерами можно посмотреть "
-            + "при помощи команды /list\n", res);
-    }
-
-    @Test
-    @DisplayName("Получение сообщения /untrack, с нечитаемым номером")
-    void givenResponseService_whenReceiveUntrackMessageWithUnrecognizableNumber_thenReturnSpecialMessage() {
-
-        when(message.text()).thenReturn("/untrack 75a");
-        clearInvocations(userRepository);
-
-        var res = responseService.getAnswer(update);
-        verify(userLinksRepository, never()).getLinks(any());
-
-        Assertions.assertEquals("Не удалось распознать номер ссылки. "
-            + "Команда должна выглядить: /untrack 1\n", res);
-    }
 
     */
 }
