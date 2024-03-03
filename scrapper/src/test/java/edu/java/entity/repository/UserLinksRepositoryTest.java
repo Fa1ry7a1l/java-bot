@@ -46,7 +46,6 @@ class UserLinksRepositoryTest {
         firstUserLinksTest.add(vk);
         firstUserLinksTest.add(youtube);
 
-
         userLinksRepository.createUser(1L);
         userLinksRepository.createUser(3L);
 
@@ -57,6 +56,67 @@ class UserLinksRepositoryTest {
 
         var allLinks = userLinksRepository.getLinks(1L);
 
+        Assertions.assertTrue(allLinks.containsAll(firstUserLinksTest));
+    }
+
+    @DisplayName("добавление уже имеющейся ссылки")
+    @Test
+    void givenUserLinksRepository_whenAddLinksAlreadyAdded_thenReceiveFalse() {
+
+        URI vk = URI.create("https://vk.com");
+        URI youtube = URI.create("https://youtube.com");
+        ArrayList<URI> firstUserLinksTest = new ArrayList<>();
+        firstUserLinksTest.add(vk);
+        firstUserLinksTest.add(youtube);
+
+        userLinksRepository.createUser(1L);
+
+        userLinksRepository.add(1L, vk);
+        userLinksRepository.add(1L, youtube);
+
+        var res = userLinksRepository.add(1L, vk);
+
+        var allLinks = userLinksRepository.getLinks(1L);
+        Assertions.assertFalse(res);
+        Assertions.assertTrue(allLinks.containsAll(firstUserLinksTest));
+    }
+    @DisplayName("удаление имеющейся ссылки")
+    @Test
+    void givenUserLinksRepository_whenRemoveExistingLink_thenReceiveTrue() {
+
+        URI vk = URI.create("https://vk.com");
+        URI youtube = URI.create("https://youtube.com");
+        ArrayList<URI> firstUserLinksTest = new ArrayList<>();
+        firstUserLinksTest.add(youtube);
+
+        userLinksRepository.createUser(1L);
+
+        userLinksRepository.add(1L, vk);
+        userLinksRepository.add(1L, youtube);
+
+        var res = userLinksRepository.remove(1L, vk);
+
+        var allLinks = userLinksRepository.getLinks(1L);
+        Assertions.assertTrue(res);
+        Assertions.assertTrue(allLinks.containsAll(firstUserLinksTest));
+    }
+    @DisplayName("удаление не имеющейся ссылки")
+    @Test
+    void givenUserLinksRepository_whenRemoveNonExistingLink_thenReceiveFalse() {
+
+        URI vk = URI.create("https://vk.com");
+        URI youtube = URI.create("https://youtube.com");
+        ArrayList<URI> firstUserLinksTest = new ArrayList<>();
+        firstUserLinksTest.add(youtube);
+
+        userLinksRepository.createUser(1L);
+
+        userLinksRepository.add(1L, youtube);
+
+        var res = userLinksRepository.remove(1L, vk);
+
+        var allLinks = userLinksRepository.getLinks(1L);
+        Assertions.assertFalse(res);
         Assertions.assertTrue(allLinks.containsAll(firstUserLinksTest));
     }
 }
