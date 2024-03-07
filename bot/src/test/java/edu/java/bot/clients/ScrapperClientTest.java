@@ -50,14 +50,11 @@ class ScrapperClientTest {
                     }
                     """)));
 
-        var response = client.getAllLinksForChat(1L).block();
+        var response = client.getAllLinksForChat(1L);
 
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        var body = response.getBody();
-        Assertions.assertNotNull(body);
-        Assertions.assertTrue(body.links().isEmpty());
-        Assertions.assertEquals(0, body.size());
+        Assertions.assertTrue(response.links().isEmpty());
+        Assertions.assertEquals(0, response.size());
     }
 
     @DisplayName("проверка непустого списка ссылок")
@@ -82,16 +79,14 @@ class ScrapperClientTest {
                     }
                     """)));
 
-        var response = client.getAllLinksForChat(1L).block();
+        var response = client.getAllLinksForChat(1L);
 
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        var body = response.getBody();
-        Assertions.assertNotNull(body);
-        Assertions.assertEquals(2, body.links().size());
-        Assertions.assertEquals(2, body.size());
-        Assertions.assertEquals(URI.create("https://vk.com"), body.links().get(0).url());
-        Assertions.assertEquals(URI.create("https://youtube.com"), body.links().get(1).url());
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(2, response.links().size());
+        Assertions.assertEquals(2, response.size());
+        Assertions.assertEquals(URI.create("https://vk.com"), response.links().get(0).url());
+        Assertions.assertEquals(URI.create("https://youtube.com"), response.links().get(1).url());
     }
 
     @DisplayName("проверка непустого списка ссылок")
@@ -112,14 +107,12 @@ class ScrapperClientTest {
                     """)));
 
         var exception =
-            Assertions.assertThrows(ApiErrorResponseException.class, () -> client.getAllLinksForChat(2L).block());
+            Assertions.assertThrows(ApiErrorResponseException.class, () -> client.getAllLinksForChat(2L));
 
         Assertions.assertNotNull(exception);
-        Assertions.assertNotNull(exception.getApiErrorResponse());
-        Assertions.assertEquals(HttpStatus.NOT_FOUND.toString(), exception.getApiErrorResponse().code());
         Assertions.assertEquals(
             "Вы пытаетесь обратиться к пользователю, которого бот не знает",
-            exception.getApiErrorResponse().description()
+            exception.getDescription()
         );
     }
 
@@ -142,13 +135,10 @@ class ScrapperClientTest {
                     }
                     """)));
 
-        var response = client.addLink(1L, new AddLinkRequest(testURL)).block();
+        var response = client.addLink(1L, new AddLinkRequest(testURL));
 
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        var body = response.getBody();
-        Assertions.assertNotNull(body);
-        Assertions.assertEquals(body.url(), testURL);
+        Assertions.assertEquals(response.url(), testURL);
     }
 
     @DisplayName("проверка отправки ссылки для несуществующего пользователя")
@@ -173,15 +163,13 @@ class ScrapperClientTest {
         var exception =
             Assertions.assertThrows(
                 ApiErrorResponseException.class,
-                () -> client.addLink(2L, new AddLinkRequest(testURL)).block()
+                () -> client.addLink(2L, new AddLinkRequest(testURL))
             );
 
         Assertions.assertNotNull(exception);
-        Assertions.assertNotNull(exception.getApiErrorResponse());
-        Assertions.assertEquals(HttpStatus.NOT_FOUND.toString(), exception.getApiErrorResponse().code());
         Assertions.assertEquals(
             "Вы пытаетесь обратиться к пользователю, которого бот не знает",
-            exception.getApiErrorResponse().description()
+            exception.getDescription()
         );
     }
 
@@ -200,12 +188,10 @@ class ScrapperClientTest {
                     }
                     """)));
 
-        var result = client.removeLink(1L, new RemoveLinkRequest(testURL)).block();
+        var result = client.removeLink(1L, new RemoveLinkRequest(testURL));
 
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-        Assertions.assertNotNull(result.getBody());
-        Assertions.assertEquals(testURL, result.getBody().url());
+        Assertions.assertEquals(testURL, result.url());
     }
 
     @DisplayName("проверка удаления несуществующей ссылки")
@@ -230,15 +216,13 @@ class ScrapperClientTest {
         var exception =
             Assertions.assertThrows(
                 ApiErrorResponseException.class,
-                () -> client.removeLink(1L, new RemoveLinkRequest(testURL)).block()
+                () -> client.removeLink(1L, new RemoveLinkRequest(testURL))
             );
 
         Assertions.assertNotNull(exception);
-        Assertions.assertNotNull(exception.getApiErrorResponse());
-        Assertions.assertEquals(HttpStatus.NOT_FOUND.toString(), exception.getApiErrorResponse().code());
         Assertions.assertEquals(
             "попытка удалить ссылку, которой нет",
-            exception.getApiErrorResponse().description()
+            exception.getDescription()
         );
     }
 
@@ -264,15 +248,13 @@ class ScrapperClientTest {
         var exception =
             Assertions.assertThrows(
                 ApiErrorResponseException.class,
-                () -> client.removeLink(10L, new RemoveLinkRequest(testURL)).block()
+                () -> client.removeLink(10L, new RemoveLinkRequest(testURL))
             );
 
         Assertions.assertNotNull(exception);
-        Assertions.assertNotNull(exception.getApiErrorResponse());
-        Assertions.assertEquals(HttpStatus.NOT_FOUND.toString(), exception.getApiErrorResponse().code());
         Assertions.assertEquals(
             "Вы пытаетесь обратиться к пользователю, которого бот не знает",
-            exception.getApiErrorResponse().description()
+            exception.getDescription()
         );
     }
 
@@ -284,10 +266,9 @@ class ScrapperClientTest {
         MOCK_SERVER.stubFor(WireMock.post("/tg-chat/" + id)
             .willReturn(WireMock.ok()));
 
-        var res = client.registerChat(id).block();
+        var res = client.registerChat(id);
 
-        Assertions.assertNotNull(res);
-        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+        Assertions.assertTrue(res);
     }
 
     @DisplayName("проверка повторного добавления пользователя")
@@ -311,15 +292,13 @@ class ScrapperClientTest {
         var exception =
             Assertions.assertThrows(
                 ApiErrorResponseException.class,
-                () -> client.registerChat(id).block()
+                () -> client.registerChat(id)
             );
 
         Assertions.assertNotNull(exception);
-        Assertions.assertNotNull(exception.getApiErrorResponse());
-        Assertions.assertEquals(HttpStatus.CONFLICT.toString(), exception.getApiErrorResponse().code());
         Assertions.assertEquals(
             "Вы пытаетесь повторно зарегистрироваться в боте",
-            exception.getApiErrorResponse().description()
+            exception.getDescription()
         );
     }
 
@@ -331,10 +310,9 @@ class ScrapperClientTest {
         MOCK_SERVER.stubFor(WireMock.delete("/tg-chat/" + id)
             .willReturn(WireMock.ok()));
 
-        var res = client.deleteChat(id).block();
+        var res = client.deleteChat(id);
 
-        Assertions.assertNotNull(res);
-        Assertions.assertEquals(HttpStatus.OK, res.getStatusCode());
+        Assertions.assertTrue(res);
     }
 
     @DisplayName("проверка повторного добавления пользователя")
@@ -358,15 +336,13 @@ class ScrapperClientTest {
         var exception =
             Assertions.assertThrows(
                 ApiErrorResponseException.class,
-                () -> client.deleteChat(id).block()
+                () -> client.deleteChat(id)
             );
 
         Assertions.assertNotNull(exception);
-        Assertions.assertNotNull(exception.getApiErrorResponse());
-        Assertions.assertEquals(HttpStatus.NOT_FOUND.toString(), exception.getApiErrorResponse().code());
         Assertions.assertEquals(
             "Вы пытаетесь обратиться к пользователю, которого бот не знает",
-            exception.getApiErrorResponse().description()
+            exception.getDescription()
         );
     }
 }

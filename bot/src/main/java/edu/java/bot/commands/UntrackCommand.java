@@ -4,17 +4,13 @@ import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.clients.ScrapperClient;
 import edu.java.bot.exceptions.ApiErrorResponseException;
 import edu.java.dtos.LinkResponse;
-import edu.java.dtos.ListLinksResponse;
 import edu.java.dtos.RemoveLinkRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component public class UntrackCommand extends Command {
 
@@ -57,22 +53,20 @@ import reactor.core.publisher.Mono;
     }
 
     @Nullable private List<LinkResponse> getUserLinks(Long id) {
-        return client.getAllLinksForChat(id).map(response -> Objects.requireNonNull(response.getBody()).links())
-            .onErrorReturn(new ListLinksResponse(new ArrayList<>(), 0).links()).block();
+        try {
+            var linkListResponse = client.getAllLinksForChat(id);
+            return linkListResponse.links();
+        } catch (ApiErrorResponseException e) {
+            return new ArrayList<>();
+        }
     }
 
     private String removeLink(Long id, List<LinkResponse> userLinks, int linkNumber) {
-        return client.removeLink(id, new RemoveLinkRequest(userLinks.get(linkNumber - 1).url())).map(response -> {
-            if (response.getStatusCode().equals(HttpStatus.OK)) {
-                return "Успешно убрали ссылку\n";
-            }
-
-            LOGGER.info("removeLink " + id + " вернуло код " + response.getStatusCode());
-            return "Что то пошло не так";
-        }).onErrorResume(ApiErrorResponseException.class, exception -> {
-            LOGGER.debug(
-                "removeLink пользователю " + id + " вернуло ошибку " + exception.getApiErrorResponse().description());
-            return Mono.just(exception.getApiErrorResponse().description());
-        }).block();
+        try {
+            var response = client.removeLink(id, new RemoveLinkRequest(userLinks.get(linkNumber - 1).url()));
+            return "Успешно убрали ссылку\n";
+        } catch (ApiErrorResponseException e) {
+            return e.getDescription();
+        }
     }
 }

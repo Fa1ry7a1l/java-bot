@@ -8,14 +8,11 @@ import edu.java.dtos.AddLinkRequest;
 import java.net.URI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component
 public class TrackCommand extends Command {
     private static final Logger LOGGER = LogManager.getLogger(StartCommand.class);
-
 
     LinkChecker linkChecker;
     ScrapperClient client;
@@ -42,6 +39,22 @@ public class TrackCommand extends Command {
 
         URI uri = linkChecker.tryValidate(textArray[1]);
 
+        var uriProcessError = processUri(uri);
+        if (!uriProcessError.isEmpty()) {
+            return uriProcessError;
+        }
+
+        try {
+            var response = client.addLink(update.message().chat().id(), new AddLinkRequest(uri));
+            return "Успешно добавили\n";
+        } catch (ApiErrorResponseException e) {
+            LOGGER.debug("track пользователю " + id + " вернуло ошибку " + e.getDescription());
+            return e.getDescription();
+        }
+
+    }
+
+    private String processUri(URI uri) {
         if (uri == null) {
             return "Некорректная ссылка\n";
         }
@@ -49,23 +62,6 @@ public class TrackCommand extends Command {
         if (uri.getHost() == null) {
             return "Ссылка должна содержать протокол: http:// или https://\n";
         }
-
-        return client.addLink(update.message().chat().id(), new AddLinkRequest(uri))
-            .map(response -> {
-                if (HttpStatus.OK.equals(response.getStatusCode())
-                    && response.getBody() != null) {
-                    return "Успешно добавили\n";
-                }
-
-                LOGGER.info("track " + id + " вернуло код " + response.getStatusCode());
-                return "Что то пошло не так";
-            })
-            .onErrorResume(ApiErrorResponseException.class, exception -> {
-                LOGGER.debug("track пользователю " + id + " вернуло ошибку " + exception.getApiErrorResponse()
-                    .description());
-                return Mono.just(exception.getApiErrorResponse()
-                    .description());
-            }).block();
-
+        return "";
     }
 }

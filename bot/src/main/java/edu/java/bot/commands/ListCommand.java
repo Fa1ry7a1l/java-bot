@@ -7,9 +7,7 @@ import edu.java.dtos.LinkResponse;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 @Component
 public class ListCommand extends Command {
@@ -25,26 +23,14 @@ public class ListCommand extends Command {
     @Override
     public String handle(Update update) {
         Long id = update.message().chat().id();
-        return client.getAllLinksForChat(id)
-            .map(response -> {
-                if (!HttpStatus.OK.equals(response.getStatusCode())) {
-                    LOGGER.info(
-                        "получена ошибка при запросе ссылок у пользователя " + id + " " + response.getStatusCode()
-                            + " " + response.getBody());
-                }
-                if (HttpStatus.OK.equals(response.getStatusCode()) && response.getBody() != null
-                    && response.getBody().links() != null) {
-                    return processLinks(response.getBody().links());
-                }
-                LOGGER.info("addLink " + id + " вернуло код " + response.getStatusCode());
-                return "Что то пошло не так";
-            })
-            .onErrorResume(ApiErrorResponseException.class, exception -> {
-                LOGGER.debug("addLink пользователю " + id + " вернуло ошибку " + exception.getApiErrorResponse()
-                    .description());
-                return Mono.just(exception.getApiErrorResponse()
-                    .description());
-            }).block();
+
+        try {
+            var linkListResponse = client.getAllLinksForChat(id);
+            return processLinks(linkListResponse.links());
+        } catch (ApiErrorResponseException e) {
+            return e.getDescription();
+        }
+
     }
 
     private String processLinks(List<LinkResponse> links) {

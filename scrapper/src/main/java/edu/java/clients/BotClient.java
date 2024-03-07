@@ -16,16 +16,19 @@ public class BotClient {
         client = WebClient.create(baseUrl);
     }
 
-    public Mono<ResponseEntity<Void>> sendUpdate(LinkUpdateRequest request) {
-        return client.post()
+    public boolean sendUpdate(LinkUpdateRequest request) {
+        client.post()
             .uri("/updates")
             .bodyValue(request)
             .retrieve()
             .onStatus(
                 statusCode -> HttpStatus.CONFLICT.equals(statusCode) || HttpStatus.BAD_REQUEST.equals(statusCode),
-                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiErrorResponseException::new)
+                response -> response.bodyToMono(ApiErrorResponse.class).handle((apiErrorResponse, sink) -> {
+                    sink.error(new ApiErrorResponseException(apiErrorResponse.description()));
+                })
             )
-            .toBodilessEntity();
+            .toBodilessEntity().block();
+        return true;
     }
 
 }

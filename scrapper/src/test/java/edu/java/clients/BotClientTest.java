@@ -42,10 +42,9 @@ public class BotClientTest {
                 .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)));
 
         var response =
-            client.sendUpdate(new LinkUpdateRequest(1L, URI.create("https://vk.com"), "вк", List.of(1L, 2L))).block();
+            client.sendUpdate(new LinkUpdateRequest(1L, URI.create("https://vk.com"), "вк", List.of(1L, 2L)));
 
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertTrue(response);
     }
 
 }
