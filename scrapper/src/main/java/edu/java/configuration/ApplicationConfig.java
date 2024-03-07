@@ -9,8 +9,21 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ApplicationConfig(
     @NotNull
-    Scheduler scheduler
+    Scheduler scheduler,
+
+    Clients clients
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
+
+    public record Clients(GitHub gitHub, StackOverflow stackOverflow) {
+        public record GitHub(String url) {
+
+        }
+
+        public record StackOverflow(String url) {
+
+        }
+    }
+
 }
