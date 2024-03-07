@@ -39,7 +39,7 @@ public class ListCommand extends Command {
         }
         StringBuilder sb = new StringBuilder("Ваши ссылки \n");
         for (int i = 0; i < links.size(); i++) {
-            sb.append(i + 1).append(") ").append(links.get(i).toString()).append("\n");
+            sb.append(i + 1).append(") ").append(links.get(i).url().toString()).append("\n");
         }
         return sb.toString();
     }
