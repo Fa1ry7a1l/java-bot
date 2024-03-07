@@ -34,7 +34,7 @@ class GitHubClientTest {
 
     @DynamicPropertySource
     private static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("app.clients.git-hub", MOCK_SERVER::baseUrl);
+        registry.add("app.clients.github.url", MOCK_SERVER::baseUrl);
     }
 
     @DisplayName("проверка доступного репозитория")

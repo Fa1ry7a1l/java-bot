@@ -15,12 +15,12 @@ public class ClientConfiguration {
 
     @Bean
     public GitHubClient gitHubClient() {
-        return new GitHubClient(applicationConfig.clients().gitHub());
+        return new GitHubClient(applicationConfig.clients().gitHub().url());
     }
 
     @Bean
     public StackOverflowClient stackOverflowClient() {
-        return new StackOverflowClient(applicationConfig.clients().stackOverflow());
+        return new StackOverflowClient(applicationConfig.clients().stackOverflow().url());
     }
 
 
