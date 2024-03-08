@@ -16,6 +16,17 @@ public record ApplicationConfig(
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
 
-    public record Clients(String gitHub, String stackOverflow, String bot) {
+    public record Clients(GitHub gitHub, StackOverflow stackOverflow, Bot bot) {
+        public record GitHub(String url) {
+
+        }
+
+        public record StackOverflow(String url) {
+
+        }
+
+        public record Bot(String url) {
+
+        }
     }
 }
