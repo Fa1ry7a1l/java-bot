@@ -26,7 +26,7 @@ public class ClientConfiguration {
 
     @Bean
     public BotClient botClient() {
-        return new BotClient(applicationConfig.clients().bot());
+        return new BotClient(applicationConfig.clients().bot().url());
     }
 
 }
