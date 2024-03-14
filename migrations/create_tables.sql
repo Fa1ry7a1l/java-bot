@@ -3,8 +3,8 @@
 --changeset fa1ry7a1l:1
 CREATE TABLE IF NOT EXISTS telegram_chat
 (
-    id            BIGINT,
-    registered_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    id            BIGINT ,
+    registered_at timestamp with time zone NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS link
     id              BIGINT GENERATED ALWAYS AS IDENTITY,
     url             VARCHAR(256) UNIQUE NOT NULL,
     description     VARCHAR(256) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE,
+    updated_at timestamp with time zone,
     PRIMARY KEY (id)
 );
 

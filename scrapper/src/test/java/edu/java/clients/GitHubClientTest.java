@@ -52,7 +52,7 @@ class GitHubClientTest {
                     }
                     """)));
 
-        GitHubDTO response = gitHubClient.getQuestionsInfo(repositoryPath).block();
+        GitHubDTO response = gitHubClient.getQuestionsInfo(repositoryPath);
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(repositoryUpdatedAt, response.lastActivityDate());
@@ -73,7 +73,7 @@ class GitHubClientTest {
                     }
                     """)));
 
-        assertThrows(WebClientResponseException.class, () -> gitHubClient.getQuestionsInfo(repositoryPath).block());
+        assertThrows(WebClientResponseException.class, () -> gitHubClient.getQuestionsInfo(repositoryPath));
     }
 
 }

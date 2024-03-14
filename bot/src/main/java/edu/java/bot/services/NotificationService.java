@@ -14,9 +14,11 @@ public class NotificationService {
     public void sendUpdateNotification(LinkUpdateRequest request) {
         String message = """
             ресурс
-            ```%s```
+            ```
+            %s
+            ```
             был обновлен
-            """.formatted(request.description());
+            """.formatted(request.description().isEmpty() ? request.url().toString() : request.description());
 
         for (Long id : request.tgChatIds()) {
             bot.sendMessage(id, message);
