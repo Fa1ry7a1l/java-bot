@@ -31,7 +31,7 @@ public class BotClientTest {
 
     @DynamicPropertySource
     private static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("app.clients.bot", MOCK_SERVER::baseUrl);
+        registry.add("app.clients.bot.url", MOCK_SERVER::baseUrl);
     }
 
     @DisplayName("шлем обновления")
