@@ -1,4 +1,4 @@
-package edu.java.bot.entity.repository;
+package edu.java.entity.repository;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -8,24 +8,25 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserLinksRepository {
 
-    public UserLinksRepository() {
-    }
-
     private final HashMap<Long, ArrayList<URI>> links = new HashMap<>();
 
-    public HashMap<Long, ArrayList<URI>> getLinks() {
-        return links;
+    public boolean add(Long id, URI link) {
+        ArrayList<URI> currentUsersLinks;
+        currentUsersLinks = links.get(id);
+        if (currentUsersLinks.contains(link)) {
+            return false;
+        }
+        currentUsersLinks.add(link);
+        return true;
+
     }
 
+    public void createUser(Long id) {
+        links.put(id, new ArrayList<>());
+    }
 
-    public void addLink(Long id, URI link) {
-        ArrayList<URI> currentUsersLinks;
-        if (!links.containsKey(id)) {
-            links.put(id, new ArrayList<>());
-
-        }
-        currentUsersLinks = links.get(id);
-        currentUsersLinks.add(link);
+    public boolean remove(Long id, URI url) {
+        return links.get(id).remove(url);
     }
 
     public ArrayList<URI> getLinks(Long id) {

@@ -6,8 +6,9 @@ import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
-import edu.java.bot.commands.CommandHandler;
+import edu.java.bot.commands.Command;
 import edu.java.bot.configuration.ApplicationConfig;
+import edu.java.bot.services.ResponseService;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -23,16 +24,18 @@ public class Bot implements UpdatesListener {
 
     private final TelegramBot telegramBot;
 
-    private final CommandHandler commandHandler;
+    private final List<Command> allCommands;
 
     private final ResponseService responseService;
 
     @Autowired
-    public Bot(ApplicationConfig config, CommandHandler commandHandler, ResponseService responseService) {
+    public Bot(ApplicationConfig config, List<Command> allCommands, ResponseService responseService) {
         this.telegramBot = new TelegramBot(config.telegramToken());
 
-        this.commandHandler = commandHandler;
+        this.allCommands = allCommands;
         this.responseService = responseService;
+
+        LOGGER.debug(allCommands.size());
     }
 
     @PostConstruct
@@ -53,6 +56,16 @@ public class Bot implements UpdatesListener {
         LOGGER.info("завершили инициализацию");
     }
 
+    public void sendMessage(Long id, String message) {
+        var splitMessage = message.split(SPLIT_TOO_LONG_ANSWERS_REGEX);
+        for (var messagePars : splitMessage) {
+            SendMessage sendMessage =
+                new SendMessage(id, messagePars).disableWebPagePreview(true);
+
+            telegramBot.execute(sendMessage);
+        }
+    }
+
     @Override
     public int process(List<Update> list) {
         for (Update update : list) {
@@ -63,7 +76,7 @@ public class Bot implements UpdatesListener {
                 var responseArray = response.split(SPLIT_TOO_LONG_ANSWERS_REGEX);
                 for (var message : responseArray) {
                     SendMessage sendMessage =
-                        new SendMessage(update.message().chat().id(), message);
+                        new SendMessage(update.message().chat().id(), message).disableWebPagePreview(true);
 
                     telegramBot.execute(sendMessage);
                 }
@@ -76,10 +89,9 @@ public class Bot implements UpdatesListener {
 
     private SetMyCommands setCommands() {
 
-        var commands = commandHandler.getCommands().values().stream().toList();
-        BotCommand[] botCommands = new BotCommand[commands.size()];
-        for (int i = 0; i < commands.size(); i++) {
-            botCommands[i] = new BotCommand(commands.get(i).command, commands.get(i).description);
+        BotCommand[] botCommands = new BotCommand[allCommands.size()];
+        for (int i = 0; i < allCommands.size(); i++) {
+            botCommands[i] = new BotCommand(allCommands.get(i).getCommand(), allCommands.get(i).getDescription());
         }
         return new SetMyCommands(botCommands);
     }

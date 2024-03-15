@@ -1,18 +1,17 @@
 package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
 public abstract class Command {
 
-    public final String command;
-    public final String description;
+    private final String command;
+    private final String description;
 
-    public Command(String command, String description) {
-        this.command = command;
-        this.description = description;
-    }
 
     public abstract String handle(Update update);
 
-    //default boolean supports(Update update) {  }
 }

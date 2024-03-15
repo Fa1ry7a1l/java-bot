@@ -1,6 +1,6 @@
-package edu.java.bot.entity.repository;
+package edu.java.entity.repository;
 
-import edu.java.bot.entity.User;
+import edu.java.entity.User;
 import java.util.HashMap;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
@@ -19,5 +19,10 @@ public class UserRepository {
 
     public void put(Long id, User user) {
         usersMap.put(id, user);
+    }
+
+    public boolean delete(Long id) {
+        var result = usersMap.remove(id);
+        return result != null;
     }
 }
