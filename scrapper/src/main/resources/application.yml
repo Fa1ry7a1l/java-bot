@@ -18,6 +18,12 @@ springdoc:
 spring:
   application:
     name: scrapper
+  datasource:
+    url: ${bd_url:jdbc:postgresql://localhost:5432/scrapper }
+    username: ${db_login:postgres}
+    password: ${db_password:postgres}
+  liquibase:
+    enabled: false
 
 server:
   port: 8080
