@@ -6,7 +6,6 @@ import reactor.core.publisher.Mono;
 
 public class StackOverflowClient {
 
-
     private final WebClient client;
 
     public StackOverflowClient(String basePath) {
@@ -15,7 +14,10 @@ public class StackOverflowClient {
 
     public Mono<StackOverflowDTO> getQuestionsInfo(String ids) {
         return client.get()
-            .uri("/questions/" + ids + "?site=stackoverflow")
+            .uri(uriBuilder ->
+                uriBuilder.path("/questions/{ids}")
+                    .queryParam("site", "stackoverflow")
+                    .build(ids))
             .retrieve()
             .bodyToMono(StackOverflowDTO.class);
     }

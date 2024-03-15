@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class LinkCheckerScheduler {
     private static final Logger LOGGER = LogManager.getLogger(LinkCheckerScheduler.class.getName());
 
-    @Scheduled(fixedDelayString = "PT${app.scheduler.interval}",
-               initialDelayString = "PT${app.scheduler.force-check-delay}")
+    @Scheduled(fixedDelayString = "${app.scheduler.interval}",
+               initialDelayString = "${app.scheduler.force-check-delay}")
     public void update() {
         LOGGER.debug("вызвали проверку ссылок");
     }

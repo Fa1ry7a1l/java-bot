@@ -7,6 +7,7 @@ import edu.java.clients.dto.StackOverflowDTO;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import edu.java.configuration.ApplicationConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,12 +28,20 @@ class StackOverflowClientTest {
 
     @DynamicPropertySource
     private static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("app.clients.stack-overflow", WIRE_MOCK_SERVER::baseUrl);
+        registry.add("app.clients.stackOverflow.url", WIRE_MOCK_SERVER::baseUrl);
     }
 
     @Autowired
     StackOverflowClient stackOverflowClient;
 
+    @Autowired ApplicationConfig config;
+
+    @Test
+    public void test()
+    {
+        System.out.println(config.clients().gitHub().url());
+        System.out.println(config.clients().stackOverflow().url());
+    }
     @DisplayName("существующий вопрос")
     @Test
     public void givenClient_whenRequestExistingQuestion_thenReceiveTime() {

@@ -1,12 +1,13 @@
 app:
   scheduler:
     enable: true
-    interval: 10s
-    force-check-delay: 10s
+    interval: PT10s
+    force-check-delay: PT10s
   clients:
-    gitHub: https://api.github.com
-    stackOverflow: https://api.stackexchange.com/2.3
-    bot: http://localhost:8090
+    gitHub:
+      url: https://api.github.com
+    stackOverflow:
+      url: https://api.stackexchange.com/2.3
 
 springdoc:
   swagger-ui:
