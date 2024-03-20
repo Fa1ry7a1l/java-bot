@@ -8,6 +8,7 @@ import edu.java.entity.repository.jpa.JPAChatRepository;
 import edu.java.entity.repository.jpa.JPALinkRepository;
 import edu.java.exceptions.DeletingNotExistingUrlException;
 import edu.java.exceptions.UserNotFoundException;
+import edu.java.scrapper.IntegrationTest;
 import edu.java.services.LinkService;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -22,7 +23,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-class JPALinkServiceTest {
+class JPALinkServiceTest extends IntegrationTest {
     private LinkService linkService;
 
     @Autowired
