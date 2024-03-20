@@ -30,6 +30,6 @@ public record ApplicationConfig(
         public record Bot(String url) {
 
         }
-
     }
+
 }
