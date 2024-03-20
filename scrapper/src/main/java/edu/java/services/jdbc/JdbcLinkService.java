@@ -15,10 +15,8 @@ import edu.java.services.LinkService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
-@Service
 public class JdbcLinkService implements LinkService {
 
     private final ChatRepository chatRepository;
