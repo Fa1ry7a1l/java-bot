@@ -2,7 +2,6 @@ package edu.java.clients;
 
 import edu.java.clients.dto.StackOverflowDTO;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 public class StackOverflowClient {
 
@@ -12,14 +11,14 @@ public class StackOverflowClient {
         client = WebClient.create(basePath);
     }
 
-    public Mono<StackOverflowDTO> getQuestionsInfo(String ids) {
+    public StackOverflowDTO getQuestionsInfo(String ids) {
         return client.get()
             .uri(uriBuilder ->
                 uriBuilder.path("/questions/{ids}")
                     .queryParam("site", "stackoverflow")
                     .build(ids))
             .retrieve()
-            .bodyToMono(StackOverflowDTO.class);
+            .bodyToMono(StackOverflowDTO.class).block();
     }
 
 }

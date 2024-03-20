@@ -16,7 +16,7 @@ public class NotificationService {
             ресурс
             ```%s```
             был обновлен
-            """.formatted(request.description());
+            """.formatted(request.description().isEmpty() ? request.url().toString() : request.description());
 
         for (Long id : request.tgChatIds()) {
             bot.sendMessage(id, message);

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpStatus;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserNotFoundExceptionTest {
+public class ChatNotFoundExceptionTest {
     @Test
     public void test() {
 

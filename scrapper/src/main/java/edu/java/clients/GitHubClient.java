@@ -2,7 +2,6 @@ package edu.java.clients;
 
 import edu.java.clients.dto.GitHubDTO;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 public class GitHubClient {
 
@@ -12,12 +11,11 @@ public class GitHubClient {
         client = WebClient.create(basePath);
     }
 
-    public Mono<GitHubDTO> getQuestionsInfo(String repository) {
+    public GitHubDTO getQuestionsInfo(String repository) {
         return client.get()
             .uri("/repos/" + repository)
             .retrieve()
-            .bodyToMono(GitHubDTO.class);
+            .bodyToMono(GitHubDTO.class).block();
     }
-
 
 }
