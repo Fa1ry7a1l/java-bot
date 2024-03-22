@@ -4,12 +4,10 @@ import edu.java.entity.Chat;
 import edu.java.entity.Link;
 import java.time.OffsetDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class LinkRepository {
@@ -21,8 +19,9 @@ public class LinkRepository {
     private static final String SQL_ALL_LINKS =
         "select l.id, l.url, l.description, l.updated_at from link l";
     private static final String SQL_ALL_CHAT_LINKS =
-        "select l.id, l.url, l.description, l.updated_at from link l join public.telegram_chat_link tcl on l.id = tcl.link_id where tcl.chat_id = ?";
-
+        "select l.id, l.url, l.description, l.updated_at "
+            + "from link l join public.telegram_chat_link tcl "
+            + "on l.id = tcl.link_id where tcl.chat_id = ?";
 
     private static final String SQL_ADD_CHAT_LINK =
         "insert into telegram_chat_link (chat_id, link_id) values (?, ?)";
@@ -101,8 +100,6 @@ public class LinkRepository {
         );
     }
 
-
-
     /**
      * удаляет ссылку из базы
      */
@@ -166,7 +163,7 @@ public class LinkRepository {
      */
 
     public boolean updateLink(Link link) {
-        var res =jdbcTemplate.update(
+        var res = jdbcTemplate.update(
             SQL_UPDATE_LINK,
             link.getUpdatedAt(),
             link.getId()

@@ -1,14 +1,12 @@
 package edu.java.entity.repository;
 
 import edu.java.entity.Chat;
-import java.util.List;
 import edu.java.entity.Link;
-import lombok.AllArgsConstructor;
+import java.util.List;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class ChatRepository {

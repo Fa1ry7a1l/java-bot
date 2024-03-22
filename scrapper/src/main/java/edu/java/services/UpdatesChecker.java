@@ -8,15 +8,15 @@ import edu.java.clients.dto.StackOverflowDTO;
 import edu.java.dtos.LinkUpdateRequest;
 import edu.java.entity.Chat;
 import edu.java.entity.Link;
-import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
