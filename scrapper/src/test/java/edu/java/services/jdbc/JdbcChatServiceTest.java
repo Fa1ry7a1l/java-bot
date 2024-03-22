@@ -1,6 +1,7 @@
 package edu.java.services.jdbc;
 
 import edu.java.entity.Chat;
+import edu.java.entity.Link;
 import edu.java.entity.repository.ChatRepository;
 import edu.java.exceptions.TelegramChatAlreadyRegisteredException;
 import edu.java.services.ChatService;
@@ -10,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.net.URI;
 import java.time.OffsetDateTime;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -36,7 +37,7 @@ class JdbcChatServiceTest {
         when(chatRepository.exists(any())).thenReturn(false);
 
         try {
-            chatService.register(1L);
+            chatService.add(1L);
         } catch (TelegramChatAlreadyRegisteredException e) {
             Assertions.assertTrue(false);
         }
@@ -50,7 +51,7 @@ class JdbcChatServiceTest {
     public void givenChatService_WhenAddExistedChat_ThenException() {
         when(chatRepository.exists(any())).thenReturn(true);
 
-        Assertions.assertThrows(TelegramChatAlreadyRegisteredException.class, () -> chatService.register(1L));
+        Assertions.assertThrows(TelegramChatAlreadyRegisteredException.class, () -> chatService.add(1L));
 
         verify(chatRepository, times(1)).exists(any());
         verifyNoMoreInteractions(chatRepository);
@@ -66,6 +67,13 @@ class JdbcChatServiceTest {
         verify(chatRepository, times(1)).remove(any());
         verifyNoMoreInteractions(chatRepository);
 
+    }
+
+    @Test
+    public void givenRepository_whenchatsByLink_thenCallRepository() {
+        chatService.findChatsByLink(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now()));
+        verify(chatRepository, times(1)).findChatsByLink(any());
+        verifyNoMoreInteractions(chatRepository);
     }
 
 }

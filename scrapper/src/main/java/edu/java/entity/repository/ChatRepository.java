@@ -2,44 +2,57 @@ package edu.java.entity.repository;
 
 import edu.java.entity.Chat;
 import java.util.List;
+import edu.java.entity.Link;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@AllArgsConstructor
 public class ChatRepository {
 
-    private static final String SQL_REMOVE_USER = "delete from telegram_chat tc where tc.id=? returning *";
+    private static final String SQL_REMOVE_USER =
+        "delete from telegram_chat tc where tc.id=? returning tc.id, tc.registered_at";
     private static final String SQL_INSERT_USER =
-        "insert into telegram_chat (id, registered_at) values (?,?) returning *";
-    private static final String SQL_SELECT_ALL = "select * from telegram_chat";
-    private static final String SQL_EXISTS = "select exists(select * from telegram_chat tc where tc.id = ?) ";
-    private static final String SQL_FIND = "select * from telegram_chat tc where tc.id = ? ";
+        "insert into telegram_chat (id, registered_at) values (?,?) returning  id, registered_at";
+    private static final String SQL_SELECT_ALL = "select  tc.id, tc.registered_at from telegram_chat tc";
+    private static final String SQL_EXISTS = "select exists(select 1 from telegram_chat tc where tc.id = ?) ";
+    private static final String SQL_FIND = "select  tc.id, tc.registered_at from telegram_chat tc where tc.id = ? ";
+
+    private static final String SQL_ALL_CHATS_BY_LINK =
+        "select tc.id, tc.registered_at from link "
+            + "l join public.telegram_chat_link tcl on l.id = tcl.link_id "
+            + "join public.telegram_chat tc on tc.id = tcl.chat_id "
+            + "where l.id = ?";
 
     private final JdbcTemplate jdbcTemplate;
+
+    private final RowMapper<Chat> chatMapper;
+
+    public ChatRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        chatMapper = new BeanPropertyRowMapper<>(Chat.class);
+    }
 
     /**
      * находит всех пользователей
      */
-    @Transactional
     public List<Chat> findAll() {
         return jdbcTemplate.query(
             SQL_SELECT_ALL,
-            new BeanPropertyRowMapper<>(Chat.class)
+            chatMapper
         );
     }
 
     /**
      * добавляет пользователя
      */
-    @Transactional
     public Chat add(Chat chat) {
         var a = jdbcTemplate.queryForObject(
             SQL_INSERT_USER,
-            new BeanPropertyRowMapper<>(Chat.class),
+            chatMapper,
             chat.getId(),
             chat.getRegisteredAt()
         );
@@ -49,7 +62,6 @@ public class ChatRepository {
     /**
      * удаляет пользователя
      */
-    @Transactional
     public Chat remove(Chat chat) {
         var a = jdbcTemplate.query(
             SQL_REMOVE_USER,
@@ -65,7 +77,6 @@ public class ChatRepository {
     /**
      * существует ли чат
      */
-    @Transactional
     public boolean exists(Chat chat) {
         var a = jdbcTemplate.queryForObject(
             SQL_EXISTS,
@@ -78,16 +89,27 @@ public class ChatRepository {
     /**
      * существует ли чат
      */
-    @Transactional
     public Chat find(Long chatId) {
         var a = jdbcTemplate.query(
             SQL_FIND,
-            new BeanPropertyRowMapper<>(Chat.class),
+            chatMapper,
             chatId
         );
         if (a.isEmpty()) {
             return null;
         }
         return a.getFirst();
+    }
+
+    /**
+     * находит всех пользователей, которые мониторят ссылку
+     */
+
+    public List<Chat> findChatsByLink(Link link) {
+        return jdbcTemplate.query(
+            SQL_ALL_CHATS_BY_LINK,
+            chatMapper,
+            link.getId()
+        );
     }
 }

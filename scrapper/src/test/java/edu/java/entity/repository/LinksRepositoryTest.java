@@ -146,7 +146,7 @@ class LinksRepositoryTest extends IntegrationTest {
         chatRepository.add(c);
 
         var res = linkRepository.addChatLink(c, l1);
-        assertEquals(1, res);
+        assertTrue( res);
 
     }
 
@@ -206,34 +206,13 @@ class LinksRepositoryTest extends IntegrationTest {
         assertTrue(res.isEmpty());
     }
 
-    @DisplayName("нахождение всех пользователей по ссылке без пользователей")
-    @Test
-    @Transactional
-    @Rollback
-    void givenLinkRepository_whenFindUsersByLinkWithoutUsers_thenEmptyList() {
-        Link l1 = linkRepository.add(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now()));
-        Link l2 = linkRepository.add(new Link(1L, URI.create("https://youtube.com"), "", OffsetDateTime.now()));
-        Chat c = new Chat(1L, OffsetDateTime.now());
-        Chat c2 = new Chat(2L, OffsetDateTime.now());
-        chatRepository.add(c);
-        chatRepository.add(c2);
 
-        linkRepository.addChatLink(c, l1);
-        linkRepository.addChatLink(c, l2);
-        linkRepository.addChatLink(c2, l1);
-
-        var res = linkRepository.findChatsByLink(l2);
-        assertEquals(1, res.size());
-        var elenemt = res.get(0);
-        assertEquals(c.getId(), elenemt.getId());
-
-    }
 
     @DisplayName("уборка ссылки у пользователя, у которого нет этой ссылки")
     @Test
     @Transactional
     @Rollback
-    void givenLinkRepository_whenremoveUserLinkWithoutLinks_then0() {
+    void givenLinkRepository_whenRemoveUserLinkWithoutLinks_then0() {
         Link l1 = linkRepository.add(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now()));
         Link l2 = linkRepository.add(new Link(1L, URI.create("https://youtube.com"), "", OffsetDateTime.now()));
         Chat c = new Chat(1L, OffsetDateTime.now());
@@ -246,7 +225,7 @@ class LinksRepositoryTest extends IntegrationTest {
         linkRepository.addChatLink(c2, l1);
 
         var res = linkRepository.removeChatLink(c2, l2);
-        assertEquals(0, res);
+        assertFalse( res);
 
     }
 
@@ -267,23 +246,11 @@ class LinksRepositoryTest extends IntegrationTest {
         linkRepository.addChatLink(c2, l1);
 
         var res = linkRepository.removeChatLink(c2, l1);
-        assertEquals(1, res);
+        assertTrue( res);
 
     }
 
-    @DisplayName("нахождение всех пользователей по ссылке")
-    @Test
-    @Transactional
-    @Rollback
-    void givenLinkRepository_whenFindUsersByLinkWithUsers_thenEmptyList() {
-        Link l1 = linkRepository.add(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now()));
-        Link l2 = linkRepository.add(new Link(1L, URI.create("https://youtube.com"), "", OffsetDateTime.now()));
-        Chat c = new Chat(1L, OffsetDateTime.now());
-        chatRepository.add(c);
 
-        var res = linkRepository.findChatsByLink(l1);
-        assertTrue(res.isEmpty());
-    }
 
     @DisplayName("Нахождение Link по ссылке")
     @Test

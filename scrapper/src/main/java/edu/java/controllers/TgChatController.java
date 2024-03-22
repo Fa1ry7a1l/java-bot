@@ -34,7 +34,7 @@ public class TgChatController {
                                         schema = @Schema(implementation = ApiErrorResponse.class)))})
     @PostMapping("/{id}")
     public void registerChat(@PathVariable Long id) {
-        jdbcChatService.register(id);
+        jdbcChatService.add(id);
     }
 
     @Operation(summary = "Удалить чат", description = "", tags = {})
