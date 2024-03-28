@@ -1,33 +1,16 @@
 package edu.java.services;
 
-import edu.java.entity.User;
-import edu.java.entity.repository.UserLinksRepository;
-import edu.java.entity.repository.UserRepository;
-import edu.java.exceptions.TelegramChatAlreadyRegisteredException;
-import edu.java.exceptions.UserNotFoundException;
-import lombok.AllArgsConstructor;
+import edu.java.entity.Chat;
+import edu.java.entity.Link;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
-@AllArgsConstructor
 @Service
-public class ChatService {
+public interface ChatService {
+    void add(Long id);
 
-    private UserRepository userRepository;
-    private UserLinksRepository userLinksRepository;
+    void remove(Long id);
 
-    public void register(Long id) {
-        if (userRepository.getUser(id).isPresent()) {
-            throw new TelegramChatAlreadyRegisteredException(id);
-        }
-        userRepository.put(id, new User(id));
-        userLinksRepository.createUser(id);
-    }
+    List<Chat> findChatsByLink(Link link);
 
-    public void delete(Long id) {
-
-        var result = userRepository.delete(id);
-        if (!result) {
-            throw new UserNotFoundException(id);
-        }
-    }
 }

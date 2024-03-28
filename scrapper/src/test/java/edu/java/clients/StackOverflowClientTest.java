@@ -63,7 +63,7 @@ class StackOverflowClientTest {
                     }
                     """.formatted(epochSecond))));
 
-        StackOverflowDTO response = stackOverflowClient.getQuestionsInfo(ids).block();
+        StackOverflowDTO response = stackOverflowClient.getQuestionsInfo(ids);
 
         Assertions.assertNotNull(response);
         Assertions.assertFalse(response.items().isEmpty());
@@ -83,7 +83,7 @@ class StackOverflowClientTest {
                     }
                     """)));
 
-        StackOverflowDTO response = stackOverflowClient.getQuestionsInfo(ids).block();
+        StackOverflowDTO response = stackOverflowClient.getQuestionsInfo(ids);
 
         Assertions.assertNotNull(response);
         assertTrue(response.items().isEmpty());
