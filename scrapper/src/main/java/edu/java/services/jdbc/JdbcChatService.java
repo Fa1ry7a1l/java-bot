@@ -6,14 +6,11 @@ import edu.java.entity.repository.ChatRepository;
 import edu.java.exceptions.TelegramChatAlreadyRegisteredException;
 import edu.java.services.ChatService;
 import java.time.OffsetDateTime;
-import lombok.AllArgsConstructor;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
-@Service
 public class JdbcChatService implements ChatService {
 
     private final ChatRepository chatRepository;

@@ -146,7 +146,7 @@ class LinksRepositoryTest extends IntegrationTest {
         chatRepository.add(c);
 
         var res = linkRepository.addChatLink(c, l1);
-        assertTrue( res);
+        assertTrue(res);
 
     }
 
@@ -206,7 +206,6 @@ class LinksRepositoryTest extends IntegrationTest {
         assertTrue(res.isEmpty());
     }
 
-
     @DisplayName("уборка ссылки у пользователя, у которого нет этой ссылки")
     @Test
     @Transactional
@@ -224,7 +223,7 @@ class LinksRepositoryTest extends IntegrationTest {
         linkRepository.addChatLink(c2, l1);
 
         var res = linkRepository.removeChatLink(c2, l2);
-        assertFalse( res);
+        assertFalse(res);
 
     }
 
@@ -245,11 +244,9 @@ class LinksRepositoryTest extends IntegrationTest {
         linkRepository.addChatLink(c2, l1);
 
         var res = linkRepository.removeChatLink(c2, l1);
-        assertTrue( res);
+        assertTrue(res);
 
     }
-
-
 
     @DisplayName("Нахождение Link по ссылке")
     @Test
@@ -295,7 +292,7 @@ class LinksRepositoryTest extends IntegrationTest {
         var res = linkRepository.findByUrl(l1.getUrl().toString());
 
         offsetDateTime = offsetDateTime.minusNanos(offsetDateTime.getNano());
-        var time =res.getUpdatedAt().minusNanos(res.getUpdatedAt().getNano());
+        var time = res.getUpdatedAt().minusNanos(res.getUpdatedAt().getNano());
         Assertions.assertTrue(offsetDateTime.isEqual(time));
     }
 
@@ -305,13 +302,21 @@ class LinksRepositoryTest extends IntegrationTest {
     @Rollback
     void givenLinkRepository_whenFindMoreThenFifeMinutesLaterUpdated_thenListOfLinks() {
         Link l1 = linkRepository.add(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.MIN));
-        Link l2 = linkRepository.add(new Link(1L, URI.create("https://stack.com"), "", OffsetDateTime.now().minusMinutes(10)));
-        Link l3 = linkRepository.add(new Link(1L, URI.create("https://stackoverflow.com"), "", OffsetDateTime.now().minusMinutes(4)));
+        Link l2 = linkRepository.add(new Link(1L,
+            URI.create("https://stack.com"),
+            "",
+            OffsetDateTime.now().minusMinutes(10)
+        ));
+        Link l3 = linkRepository.add(new Link(1L,
+            URI.create("https://stackoverflow.com"),
+            "",
+            OffsetDateTime.now().minusMinutes(4)
+        ));
 
         var res = linkRepository.findMoreThenFifeMinutesLaterUpdated();
 
         Assertions.assertNotNull(res);
-        Assertions.assertEquals(2,res.size());
+        Assertions.assertEquals(2, res.size());
     }
 
 }

@@ -48,7 +48,7 @@ class JPALinkServiceTest extends IntegrationTest {
 
         chatRepository.save(chat);
 
-        var res = linkService.getAllLinks(chat.getId());
+        var res = linkService.findAllLinks(chat.getId());
 
         Assertions.assertNotNull(res);
         Assertions.assertEquals(2, res.size());
@@ -63,7 +63,7 @@ class JPALinkServiceTest extends IntegrationTest {
     @Rollback
     public void givenRepository_whenGetAllLinksForUnknownChat_thenException() {
 
-        Assertions.assertThrows(UserNotFoundException.class, () -> linkService.getAllLinks(1L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> linkService.findAllLinks(1L));
     }
 
     @Test
@@ -193,21 +193,5 @@ class JPALinkServiceTest extends IntegrationTest {
         var res = linkRepository.findById(link.getId());
 
         System.out.println(res.get().getChats().stream().findFirst());
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void givenRepository_whenChatsByLink_thenCallRepository() {
-        Link l = new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now());
-        Chat chat = new Chat(1L, OffsetDateTime.now());
-
-        l.getChats().add(chat);
-        linkRepository.save(l);
-
-        var chats = linkService.chatsByLink(l);
-
-        Assertions.assertTrue(chats.containsAll(l.getChats()));
-        Assertions.assertEquals(l.getChats().size(), chats.size());
     }
 }

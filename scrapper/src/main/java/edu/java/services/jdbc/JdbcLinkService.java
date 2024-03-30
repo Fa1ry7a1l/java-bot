@@ -15,6 +15,7 @@ import edu.java.services.LinkService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 public class JdbcLinkService implements LinkService {
@@ -23,7 +24,6 @@ public class JdbcLinkService implements LinkService {
     private final LinkRepository linksRepository;
 
     @Override
-    public ListLinksResponse getAllLinks(Long tgChatId) {
     public ListLinksResponse findAllLinks(Long tgChatId) {
         var chat = chatRepository.find(tgChatId);
         if (chat == null) {
@@ -84,8 +84,4 @@ public class JdbcLinkService implements LinkService {
         linksRepository.updateLink(link);
     }
 
-    @Override
-    public List<Chat> chatsByLink(Link link) {
-        return linksRepository.findChatsByLink(link);
-    }
 }

@@ -33,7 +33,7 @@ class JPAChatServiceTest extends IntegrationTest {
         //when(jpaChatRepository.findById(any())).thenReturn(Optional.empty());
         Chat c = null;
         try {
-            chatService.register(1L);
+            chatService.add(1L);
         } catch (TelegramChatAlreadyRegisteredException e) {
             Assertions.assertTrue(false);
         }
@@ -51,7 +51,7 @@ class JPAChatServiceTest extends IntegrationTest {
 
         jpaChatRepository.save(c);
 
-        Assertions.assertThrows(TelegramChatAlreadyRegisteredException.class, () -> chatService.register(1L));
+        Assertions.assertThrows(TelegramChatAlreadyRegisteredException.class, () -> chatService.add(1L));
 
     }
 

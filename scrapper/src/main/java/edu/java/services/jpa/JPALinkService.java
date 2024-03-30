@@ -33,7 +33,7 @@ public class JPALinkService implements LinkService {
     }
 
     @Override
-    public ListLinksResponse getAllLinks(Long tgChatId) {
+    public ListLinksResponse findAllLinks(Long tgChatId) {
         Chat chat = getChat(tgChatId);
         var links = chat.getLinks();
         return new ListLinksResponse(
@@ -83,8 +83,4 @@ public class JPALinkService implements LinkService {
         jpaLinkRepository.save(link);
     }
 
-    @Override
-    public List<Chat> chatsByLink(Link link) {
-        return link.getChats().stream().toList();
-    }
 }
