@@ -7,9 +7,7 @@ import edu.java.dtos.RemoveLinkRequest;
 import edu.java.entity.Chat;
 import edu.java.entity.Link;
 import java.util.List;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface LinkService {
     ListLinksResponse getAllLinks(Long tgChatId);
 
