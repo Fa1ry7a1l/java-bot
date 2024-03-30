@@ -24,6 +24,7 @@ public class JdbcLinkService implements LinkService {
 
     @Override
     public ListLinksResponse getAllLinks(Long tgChatId) {
+    public ListLinksResponse findAllLinks(Long tgChatId) {
         var chat = chatRepository.find(tgChatId);
         if (chat == null) {
             throw new UserNotFoundException(tgChatId);
@@ -34,6 +35,7 @@ public class JdbcLinkService implements LinkService {
 
     }
 
+    @Transactional
     @Override
     public LinkResponse addLink(Long tgChatId, AddLinkRequest request) {
         Chat chat = chatRepository.find(tgChatId);
@@ -45,14 +47,15 @@ public class JdbcLinkService implements LinkService {
             link = linksRepository.add(new Link(0L, request.link(), "", OffsetDateTime.MIN));
         }
 
-        int res = linksRepository.addChatLink(chat, link);
+        boolean res = linksRepository.addChatLink(chat, link);
 
-        if (res != 1) {
+        if (!res) {
             throw new ReaddingLinkException(tgChatId, request.link());
         }
         return new LinkResponse(link.getId(), link.getUrl());
     }
 
+    @Transactional
     @Override
     public LinkResponse removeLink(Long tgChatId, RemoveLinkRequest request) {
         Chat chat = chatRepository.find(tgChatId);

@@ -9,7 +9,6 @@ import edu.java.entity.repository.LinkRepository;
 import edu.java.exceptions.DeletingNotExistingUrlException;
 import edu.java.exceptions.ReaddingLinkException;
 import edu.java.exceptions.UserNotFoundException;
-import edu.java.services.ChatService;
 import edu.java.services.LinkService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,14 +18,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -54,7 +50,7 @@ class JdbcLinkServiceTest {
         when(chatRepository.find(any())).thenReturn(chat);
         when(linkRepository.findAllChatLinks(any())).thenReturn(List.of(l1, l2));
 
-        var res = linkService.getAllLinks(chat.getId());
+        var res = linkService.findAllLinks(chat.getId());
 
         Assertions.assertNotNull(res);
         Assertions.assertEquals(2, res.size());
@@ -68,7 +64,7 @@ class JdbcLinkServiceTest {
     public void givenRepository_whenGetAllLinksForUnknownChat_thenException() {
 
         when(chatRepository.find(any())).thenReturn(null);
-        Assertions.assertThrows(UserNotFoundException.class, () -> linkService.getAllLinks(1L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> linkService.findAllLinks(1L));
     }
 
     @Test
@@ -89,7 +85,7 @@ class JdbcLinkServiceTest {
         when(chatRepository.find(any())).thenReturn(chat);
         when(linkRepository.findByUrl(any())).thenReturn(null);
         when(linkRepository.add(any())).thenReturn(l1);
-        when(linkRepository.addChatLink(chat, l1)).thenReturn(1);
+        when(linkRepository.addChatLink(chat, l1)).thenReturn(true);
 
         var res = linkService.addLink(chat.getId(), new AddLinkRequest(l1.getUrl()));
 
@@ -112,7 +108,7 @@ class JdbcLinkServiceTest {
 
         when(chatRepository.find(any())).thenReturn(chat);
         when(linkRepository.findByUrl(any())).thenReturn(l1);
-        when(linkRepository.addChatLink(chat, l1)).thenReturn(1);
+        when(linkRepository.addChatLink(chat, l1)).thenReturn(true);
 
         var res = linkService.addLink(chat.getId(), new AddLinkRequest(l1.getUrl()));
 
@@ -135,7 +131,7 @@ class JdbcLinkServiceTest {
 
         when(chatRepository.find(any())).thenReturn(chat);
         when(linkRepository.findByUrl(any())).thenReturn(l1);
-        when(linkRepository.addChatLink(chat, l1)).thenReturn(3);
+        when(linkRepository.addChatLink(chat, l1)).thenReturn(false);
 
         Assertions.assertThrows(
             ReaddingLinkException.class,
@@ -159,7 +155,7 @@ class JdbcLinkServiceTest {
         when(chatRepository.find(any())).thenReturn(chat);
         when(linkRepository.findByUrl(any())).thenReturn(null);
         when(linkRepository.add(any())).thenReturn(l1);
-        when(linkRepository.addChatLink(chat, l1)).thenReturn(3);
+        when(linkRepository.addChatLink(chat, l1)).thenReturn(false);
 
         Assertions.assertThrows(
             ReaddingLinkException.class,
@@ -204,7 +200,7 @@ class JdbcLinkServiceTest {
 
         when(chatRepository.find(any())).thenReturn(chat);
         when(linkRepository.findByUrl(any())).thenReturn(l1);
-        when(linkRepository.removeChatLink(chat, l1)).thenReturn(1);
+        when(linkRepository.removeChatLink(chat, l1)).thenReturn(true);
 
         var res = linkService.removeLink(chat.getId(), new RemoveLinkRequest(l1.getUrl()));
 
@@ -230,12 +226,6 @@ class JdbcLinkServiceTest {
     public void givenRepository_whenUpdateList_thenCallRepository() {
         linkService.updateLink(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now()));
         verify(linkRepository, times(1)).updateLink(any());
-        verifyNoMoreInteractions(linkRepository);
-    }
-    @Test
-    public void givenRepository_whenchatsByLink_thenCallRepository() {
-        linkService.chatsByLink(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now()));
-        verify(linkRepository, times(1)).findChatsByLink(any());
         verifyNoMoreInteractions(linkRepository);
     }
 }

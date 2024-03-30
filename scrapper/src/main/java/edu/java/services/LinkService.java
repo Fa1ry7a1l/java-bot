@@ -4,12 +4,12 @@ import edu.java.dtos.AddLinkRequest;
 import edu.java.dtos.LinkResponse;
 import edu.java.dtos.ListLinksResponse;
 import edu.java.dtos.RemoveLinkRequest;
-import edu.java.entity.Chat;
 import edu.java.entity.Link;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 public interface LinkService {
-    ListLinksResponse getAllLinks(Long tgChatId);
+    ListLinksResponse findAllLinks(Long tgChatId);
 
     LinkResponse addLink(Long tgChatId, AddLinkRequest request);
 
@@ -19,5 +19,4 @@ public interface LinkService {
 
     void updateLink(Link link);
 
-    List<Chat> chatsByLink(Link link);
 }

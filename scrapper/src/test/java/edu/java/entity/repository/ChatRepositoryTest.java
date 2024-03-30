@@ -1,7 +1,9 @@
 package edu.java.entity.repository;
 
 import edu.java.entity.Chat;
+import edu.java.entity.Link;
 import edu.java.scrapper.IntegrationTest;
+import java.net.URI;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +23,9 @@ class ChatRepositoryTest extends IntegrationTest {
 
     @Autowired
     ChatRepository chatRepository;
+
+    @Autowired
+    LinkRepository linkRepository;
 
     @DisplayName("проверка добавления порльзователя")
     @Test
@@ -180,6 +185,43 @@ class ChatRepositoryTest extends IntegrationTest {
         var res = chatRepository.find(c2.getId());
 
         Assertions.assertNull(res);
+    }
+
+    @DisplayName("нахождение всех пользователей по ссылке без пользователей")
+    @Test
+    @Transactional
+    @Rollback
+    void givenLinkRepository_whenFindUsersByLinkWithoutUsers_thenEmptyList() {
+        Link l1 = linkRepository.add(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now()));
+        Link l2 = linkRepository.add(new Link(1L, URI.create("https://youtube.com"), "", OffsetDateTime.now()));
+        Chat c = new Chat(1L, OffsetDateTime.now());
+        Chat c2 = new Chat(2L, OffsetDateTime.now());
+        chatRepository.add(c);
+        chatRepository.add(c2);
+
+        linkRepository.addChatLink(c, l1);
+        linkRepository.addChatLink(c, l2);
+        linkRepository.addChatLink(c2, l1);
+
+        var res = chatRepository.findChatsByLink(l2);
+        assertEquals(1, res.size());
+        var elenemt = res.get(0);
+        assertEquals(c.getId(), elenemt.getId());
+
+    }
+
+    @DisplayName("нахождение всех пользователей по ссылке")
+    @Test
+    @Transactional
+    @Rollback
+    void givenLinkRepository_whenFindUsersByLinkWithUsers_thenEmptyList() {
+        Link l1 = linkRepository.add(new Link(1L, URI.create("https://vk.com"), "", OffsetDateTime.now()));
+        Link l2 = linkRepository.add(new Link(1L, URI.create("https://youtube.com"), "", OffsetDateTime.now()));
+        Chat c = new Chat(1L, OffsetDateTime.now());
+        chatRepository.add(c);
+
+        var res = chatRepository.findChatsByLink(l1);
+        assertTrue(res.isEmpty());
     }
 
 }

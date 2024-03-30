@@ -40,7 +40,7 @@ public class LinksController {
                                         schema = @Schema(implementation = ApiErrorResponse.class)))})
     @GetMapping
     public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") Long tgChatId) {
-        return linkService.getAllLinks(tgChatId);
+        return linkService.findAllLinks(tgChatId);
     }
 
     @Operation(summary = "Добавить отслеживание ссылки", description = "", tags = {})
