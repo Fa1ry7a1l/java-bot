@@ -22,6 +22,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext
+
 public class BotClientTest extends IntegrationTest {
     @RegisterExtension
     private static final WireMockExtension MOCK_SERVER = WireMockExtension.newInstance()

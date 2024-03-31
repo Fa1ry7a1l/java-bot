@@ -38,6 +38,24 @@ spring:
     password: ${db_password:postgres}
   liquibase:
     enabled: false
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: .*
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You sent too many requests. Wait several minutes\" }"
+      rate-limits:
+        - bandwidths:
+            - capacity: 5
+              time: 1
+              unit: minutes
+              refill-speed: interval
 
 server:
   port: 8080
