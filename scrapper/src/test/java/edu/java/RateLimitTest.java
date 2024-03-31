@@ -1,6 +1,7 @@
 package edu.java;
 
 import edu.java.dtos.ListLinksResponse;
+import edu.java.scrapper.IntegrationTest;
 import edu.java.services.LinkService;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext
-public class RateLimitTest {
+public class RateLimitTest extends IntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
