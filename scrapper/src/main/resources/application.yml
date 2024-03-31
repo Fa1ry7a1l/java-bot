@@ -51,11 +51,14 @@ bucket4j:
       url: .*
       http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You sent too many requests. Wait several minutes\" }"
       rate-limits:
-        - bandwidths:
-            - capacity: 5
-              time: 1
-              unit: minutes
-              refill-speed: interval
+      - cache-key: "@ipCheckerService.getClientIP(#this)"
+        bandwidths:
+        - capacity: 5
+          time: 1
+          unit: minutes
+          refill-speed: interval
+
+
 
 server:
   port: 8080
