@@ -35,14 +35,7 @@ class StackOverflowClientTest extends IntegrationTest {
     @Autowired
     StackOverflowClient stackOverflowClient;
 
-    @Autowired ApplicationConfig config;
 
-    @Test
-    public void test()
-    {
-        System.out.println(config.clients().gitHub().url());
-        System.out.println(config.clients().stackOverflow().url());
-    }
     @DisplayName("существующий вопрос")
     @Test
     public void givenClient_whenRequestExistingQuestion_thenReceiveTime() {

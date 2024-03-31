@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class ScrapperClient {
@@ -17,14 +18,18 @@ public class ScrapperClient {
     private static final String TG_CHAT_ID_HEADER = "Tg-Chat-Id";
     private static final String TG_CHAT_CONTROLLER_URI = "/tg-chat/{id}";
     private static final String LINK_CONTROLLER_URI = "/links";
+
+    private final RetryTemplate retryTemplate;
+
     private final WebClient client;
 
-    public ScrapperClient(String baseUrl) {
+    public ScrapperClient(String baseUrl, RetryTemplate retryTemplate) {
         client = WebClient.create(baseUrl);
+        this.retryTemplate = retryTemplate;
     }
 
     public boolean registerChat(@NotNull Long tgChatId) {
-        client.post()
+        retryTemplate.execute(context -> client.post()
             .uri(TG_CHAT_CONTROLLER_URI, tgChatId)
             .retrieve()
             .onStatus(
@@ -34,12 +39,12 @@ public class ScrapperClient {
                         sink.error(new ApiErrorResponseException(apiErrorResponse.description()));
                     })
             )
-            .toBodilessEntity().block();
+            .toBodilessEntity().block());
         return true;
     }
 
     public boolean deleteChat(@NotNull Long tgChatId) {
-        client.delete()
+        retryTemplate.execute(context -> client.delete()
             .uri(TG_CHAT_CONTROLLER_URI, tgChatId)
             .retrieve()
             .onStatus(
@@ -48,12 +53,12 @@ public class ScrapperClient {
                     sink.error(new ApiErrorResponseException(apiErrorResponse.description()));
                 })
             )
-            .toBodilessEntity().block();
+            .toBodilessEntity().block());
         return true;
     }
 
     public ListLinksResponse getAllLinksForChat(@NotNull Long tgChatId) {
-        return client.get()
+        return retryTemplate.execute(context -> client.get()
             .uri(LINK_CONTROLLER_URI)
             .header(TG_CHAT_ID_HEADER, tgChatId.toString())
             .retrieve()
@@ -63,11 +68,11 @@ public class ScrapperClient {
                     sink.error(new ApiErrorResponseException(apiErrorResponse.description()));
                 })
             )
-            .bodyToMono(ListLinksResponse.class).block();
+            .bodyToMono(ListLinksResponse.class).block());
     }
 
     public LinkResponse addLink(@NotNull Long tgChatId, @NotNull AddLinkRequest request) {
-        return client.post()
+        return retryTemplate.execute(context -> client.post()
             .uri(LINK_CONTROLLER_URI)
             .header(TG_CHAT_ID_HEADER, tgChatId.toString())
             .contentType(MediaType.valueOf(MediaType.APPLICATION_JSON_VALUE))
@@ -80,11 +85,11 @@ public class ScrapperClient {
                         sink.error(new ApiErrorResponseException(apiErrorResponse.description()));
                     })
             )
-            .bodyToMono(LinkResponse.class).block();
+            .bodyToMono(LinkResponse.class).block());
     }
 
     public LinkResponse removeLink(@NotNull Long tgChatId, @NotNull RemoveLinkRequest request) {
-        return client.method(HttpMethod.DELETE)
+        return retryTemplate.execute(context -> client.method(HttpMethod.DELETE)
             .uri(LINK_CONTROLLER_URI)
             .header(TG_CHAT_ID_HEADER, tgChatId.toString())
             .bodyValue(request)
@@ -95,7 +100,7 @@ public class ScrapperClient {
                     sink.error(new ApiErrorResponseException(apiErrorResponse.description()));
                 })
             )
-            .bodyToMono(LinkResponse.class).block();
+            .bodyToMono(LinkResponse.class).block());
     }
 
 }

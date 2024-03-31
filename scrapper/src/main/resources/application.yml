@@ -11,6 +11,19 @@ app:
       url: https://api.stackexchange.com/2.3
     bot:
       url: http://localhost:8090
+  retry:
+    max-attempts: 3
+    retry-status-codes: 500, 502, 503, 504
+    type: exponential
+#   constant:
+#      back-off-period-millis: 1000
+#    linear:
+#      initial-interval-millis: 1000
+#      max-interval-millis: 5000
+    exponential:
+      initial-interval-millis: 1000
+      multiplier: 2
+      max-interval-millis: 100000
 
 springdoc:
   swagger-ui:
