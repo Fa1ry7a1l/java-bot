@@ -13,7 +13,9 @@ public record ApplicationConfig(
     @NotEmpty
     String scrapper,
 
-    Retry retry
+    Retry retry,
+
+    KafkaInfo kafkaInfo
 ) {
     public record Retry(
         Integer maxAttempts,
@@ -38,6 +40,16 @@ public record ApplicationConfig(
             Long initialIntervalMillis,
             Double multiplier,
             Long maxIntervalMillis
+        ) {
+        }
+    }
+
+    public record KafkaInfo(String servers, Topic topic) {
+        public record Topic(
+            String name,
+            String dlqName,
+            Integer partitions,
+            Integer replicas
         ) {
         }
     }

@@ -16,7 +16,11 @@ public record ApplicationConfig(
 
     AccessType databaseAccessType,
 
-    Retry retry
+    Retry retry,
+
+    KafkaInfo kafkaInfo,
+
+    Boolean useQueue
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
@@ -58,6 +62,15 @@ public record ApplicationConfig(
             Long initialIntervalMillis,
             Double multiplier,
             Long maxIntervalMillis
+        ) {
+        }
+    }
+
+    public record KafkaInfo(String servers, Topic topic) {
+        public record Topic(
+            String name,
+            Integer partitions,
+            Integer replicas
         ) {
         }
     }
