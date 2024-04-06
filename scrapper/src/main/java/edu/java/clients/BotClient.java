@@ -20,12 +20,6 @@ public class BotClient {
         this.retryTemplate = retryTemplate;
     }
 
-    private RetryTemplate createRetryTemplate() {
-        RetryTemplate retryTemplate1 = new RetryTemplate();
-
-        return retryTemplate1;
-    }
-
     public boolean sendUpdate(LinkUpdateRequest request) {
 
         retryTemplate.execute(context ->
