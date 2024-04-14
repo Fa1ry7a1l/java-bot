@@ -52,7 +52,9 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<Long, LinkUpdateRequest> consumerFactory(ApplicationConfig config) {
-        return new DefaultKafkaConsumerFactory<>(receiverProps(config.kafkaInfo()),new LongDeserializer(),new JsonDeserializer<>(LinkUpdateRequest.class));
+        return new DefaultKafkaConsumerFactory<>(receiverProps(config.kafkaInfo()),
+            new LongDeserializer(),
+            new JsonDeserializer<>(LinkUpdateRequest.class));
     }
 
     private Map<String, Object> receiverProps(ApplicationConfig.KafkaInfo config) {

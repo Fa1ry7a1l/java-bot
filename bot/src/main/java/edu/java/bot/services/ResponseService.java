@@ -2,10 +2,10 @@ package edu.java.bot.services;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.commands.Command;
+import io.micrometer.core.instrument.Counter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import io.micrometer.core.instrument.Counter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
