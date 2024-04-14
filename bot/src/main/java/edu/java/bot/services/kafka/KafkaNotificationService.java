@@ -22,6 +22,8 @@ public class KafkaNotificationService {
                    topics = "${app.kafka-info.topic.name}",
                    containerFactory = "linkUpdateRequestConcurrentKafkaListenerContainerFactory")
     public void listen(LinkUpdateRequest update) {
+        log.info("получил запрос на обновление из kafka");
+
         try {
             notificationService.sendUpdateNotification(update);
         } catch (RuntimeException runtimeException) {
