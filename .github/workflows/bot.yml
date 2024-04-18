@@ -10,6 +10,10 @@ on:
     paths:
       - .github/workflows/bot.yml
       - bot/**
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/bot
+
 
 jobs:
   build:
@@ -29,6 +33,20 @@ jobs:
 
       - name: maven build
         run: mvn -pl bot -am package
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - id: jacoco
         uses: madrapps/jacoco-report@v1.6.1
