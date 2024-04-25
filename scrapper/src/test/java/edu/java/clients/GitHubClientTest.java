@@ -52,7 +52,7 @@ class GitHubClientTest extends IntegrationTest {
                 .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody("""
                     {
-                        "updated_at": "2024-02-23T13:03:07Z"
+                        "pushed_at": "2024-02-23T13:03:07Z"
                     }
                     """)));
 
