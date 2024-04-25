@@ -1,6 +1,5 @@
 package edu.java.services;
 
-import edu.java.clients.BotClient;
 import edu.java.clients.GitHubClient;
 import edu.java.clients.StackOverflowClient;
 import edu.java.clients.dto.GitHubDTO;
@@ -28,7 +27,7 @@ public class UpdatesChecker {
     private final ChatService chatService;
     private final GitHubClient gitHubClient;
     private final StackOverflowClient stackOverflowClient;
-    private final BotClient botClient;
+    private final LinkUpdateSenderService client;
 
 
     public void startAllLicksCheck() {
@@ -61,7 +60,7 @@ public class UpdatesChecker {
             linkService.updateLink(updatedLink);
             List<Chat> chats = chatService.findChatsByLink(link);
             if (!chats.isEmpty()) {
-                botClient.sendUpdate(new LinkUpdateRequest(
+                client.send(new LinkUpdateRequest(
                     updatedLink.getId(),
                     updatedLink.getUrl(),
                     updatedLink.getDescription(),
@@ -86,7 +85,7 @@ public class UpdatesChecker {
             linkService.updateLink(updatedLink);
             List<Chat> chats = chatService.findChatsByLink(link);
             if (!chats.isEmpty()) {
-                botClient.sendUpdate(new LinkUpdateRequest(
+                client.send(new LinkUpdateRequest(
                     updatedLink.getId(),
                     updatedLink.getUrl(),
                     updatedLink.getDescription(),

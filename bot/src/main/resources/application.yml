@@ -14,7 +14,13 @@ app:
       initial-interval-millis: 1000
       multiplier: 2
       max-interval-millis: 100000
-
+  kafka-info:
+    servers: ${DOCKER_HOST_IP:127.0.0.1}:9092,${DOCKER_HOST_IP:127.0.0.1}:9093
+    topic:
+      name: updates
+      partitions: 1
+      replicas: 1
+      dlq-name: updates_dlq
 
 spring:
   application:
