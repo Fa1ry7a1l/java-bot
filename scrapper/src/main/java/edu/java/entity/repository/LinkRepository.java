@@ -67,7 +67,6 @@ public class LinkRepository {
     /**
      * добавляет пользователю ссылку
      */
-
     public boolean addChatLink(Chat chat, Link link) {
         var res = jdbcTemplate.update(
             SQL_ADD_CHAT_LINK,
@@ -119,7 +118,6 @@ public class LinkRepository {
     /**
      * убирает у пользователя ссылку
      */
-
     public boolean removeChatLink(Chat chat, Link link) {
         var res = jdbcTemplate.update(
             SQL_REMOVE_CHAT_LINK,
@@ -132,7 +130,6 @@ public class LinkRepository {
     /**
      * существует ли ссылка
      */
-
     public boolean exists(Link link) {
         return jdbcTemplate.queryForObject(
             SQL_EXISTS,
@@ -174,7 +171,6 @@ public class LinkRepository {
     /**
      * нахождение давно обновленных
      */
-
     public List<Link> findMoreThenFifeMinutesLaterUpdated() {
         OffsetDateTime offsetDateTime = OffsetDateTime.now().minusMinutes(MINUTES_TILL_BECOMING_OLD);
 

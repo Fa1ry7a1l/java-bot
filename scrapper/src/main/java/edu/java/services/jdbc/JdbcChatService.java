@@ -8,11 +8,9 @@ import edu.java.services.ChatService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
-@Service
 public class JdbcChatService implements ChatService {
 
     private final ChatRepository chatRepository;

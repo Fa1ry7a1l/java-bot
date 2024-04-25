@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LinkCheckerScheduler {
     private static final Logger LOGGER = LogManager.getLogger(LinkCheckerScheduler.class.getName());
-
     private final UpdatesChecker updatesChecker;
-
 
     @Scheduled(fixedDelayString = "${app.scheduler.interval}",
                initialDelayString = "${app.scheduler.force-check-delay}")
@@ -21,7 +19,5 @@ public class LinkCheckerScheduler {
         LOGGER.debug("вызвали проверку ссылок");
         updatesChecker.startAllLicksCheck();
     }
-
-
 
 }

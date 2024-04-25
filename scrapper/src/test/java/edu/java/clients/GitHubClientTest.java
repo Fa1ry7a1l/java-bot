@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import edu.java.clients.dto.GitHubDTO;
+import edu.java.scrapper.IntegrationTest;
 import org.junit.Rule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class GitHubClientTest {
+class GitHubClientTest extends IntegrationTest {
 
     @RegisterExtension
     private static final WireMockExtension MOCK_SERVER = WireMockExtension.newInstance()
