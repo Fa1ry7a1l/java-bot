@@ -11,6 +11,19 @@ app:
       url: https://api.stackexchange.com/2.3
     bot:
       url: http://localhost:8090
+  retry:
+    max-attempts: 3
+    retry-status-codes: 500, 502, 503, 504
+    type: exponential
+#   constant:
+#      back-off-period-millis: 1000
+#    linear:
+#      initial-interval-millis: 1000
+#      max-interval-millis: 5000
+    exponential:
+      initial-interval-millis: 1000
+      multiplier: 2
+      max-interval-millis: 100000
 
 springdoc:
   swagger-ui:
@@ -25,6 +38,27 @@ spring:
     password: ${db_password:postgres}
   liquibase:
     enabled: false
+  cache:
+    cache-names:
+      - rate-limit-buckets
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: .*
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You sent too many requests. Wait several minutes\" }"
+      rate-limits:
+      - cache-key: "@ipCheckerService.getClientIP(#this)"
+        bandwidths:
+        - capacity: 5
+          time: 1
+          unit: minutes
+          refill-speed: interval
+
+
 
 server:
   port: 8080

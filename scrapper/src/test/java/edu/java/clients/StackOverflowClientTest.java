@@ -16,11 +16,14 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext
+
 class StackOverflowClientTest extends IntegrationTest {
     @RegisterExtension
     private static final WireMockExtension WIRE_MOCK_SERVER = WireMockExtension.newInstance()
@@ -35,14 +38,7 @@ class StackOverflowClientTest extends IntegrationTest {
     @Autowired
     StackOverflowClient stackOverflowClient;
 
-    @Autowired ApplicationConfig config;
 
-    @Test
-    public void test()
-    {
-        System.out.println(config.clients().gitHub().url());
-        System.out.println(config.clients().stackOverflow().url());
-    }
     @DisplayName("существующий вопрос")
     @Test
     public void givenClient_whenRequestExistingQuestion_thenReceiveTime() {
