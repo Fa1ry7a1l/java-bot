@@ -9,17 +9,16 @@ import edu.java.bot.commands.ListCommand;
 import edu.java.bot.commands.StartCommand;
 import edu.java.bot.commands.TrackCommand;
 import edu.java.bot.commands.UntrackCommand;
-import edu.java.bot.services.ResponseService;
+import io.micrometer.core.instrument.Counter;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.ArrayList;
-import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.lenient;
@@ -51,6 +50,9 @@ class ResponseServiceTest {
     @Mock
     private UntrackCommand untrackCommand;
 
+    @Mock
+    private Counter counter;
+
     private long userId;
 
     private ResponseService responseService;
@@ -75,7 +77,7 @@ class ResponseServiceTest {
         allAvailableCommands.add(untrackCommand);
         allAvailableCommands.add(helpCommand);
 
-        responseService = new ResponseService(allAvailableCommands);
+        responseService = new ResponseService(allAvailableCommands, counter);
 
         for (var command : allAvailableCommands) {
             clearInvocations(command);
@@ -94,9 +96,10 @@ class ResponseServiceTest {
         var res = responseService.getAnswer(update);
 
         verify(helpCommand, times(1)).handle(any());
-        Assertions.assertEquals(res,helpCommand.getCommand());
+        Assertions.assertEquals(res, helpCommand.getCommand());
 
     }
+
     @Test
     @DisplayName("Получение сообщения /start")
     void givenResponseService_whenReceiveStartMessage_thenReturnHelpText() {
@@ -105,7 +108,7 @@ class ResponseServiceTest {
         var res = responseService.getAnswer(update);
 
         verify(startCommand, times(1)).handle(any());
-        Assertions.assertEquals(res,startCommand.getCommand());
+        Assertions.assertEquals(res, startCommand.getCommand());
 
     }
 
@@ -117,7 +120,7 @@ class ResponseServiceTest {
         var res = responseService.getAnswer(update);
 
         verify(listCommand, times(1)).handle(any());
-        Assertions.assertEquals(res,listCommand.getCommand());
+        Assertions.assertEquals(res, listCommand.getCommand());
     }
 
     @Test
@@ -128,7 +131,7 @@ class ResponseServiceTest {
         var res = responseService.getAnswer(update);
 
         verify(trackCommand, times(1)).handle(any());
-        Assertions.assertEquals(res,trackCommand.getCommand());
+        Assertions.assertEquals(res, trackCommand.getCommand());
     }
 
     @Test
@@ -139,7 +142,7 @@ class ResponseServiceTest {
         var res = responseService.getAnswer(update);
 
         verify(untrackCommand, times(1)).handle(any());
-        Assertions.assertEquals(res,untrackCommand.getCommand());
+        Assertions.assertEquals(res, untrackCommand.getCommand());
     }
 
     @Test

@@ -24,8 +24,22 @@ app:
     servers: ${DOCKER_HOST_IP:127.0.0.1}:9092,${DOCKER_HOST_IP:127.0.0.1}:9093
     topic:
       name: updates
-      partitions: 2
-      replicas: 2
+      partitions: 1
+      replicas: 1
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  server:
+    port: 8081
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,info,prometheus
+      path-mapping:
+        prometheus: metrics
 
 
 springdoc:
