@@ -1,4 +1,5 @@
 app:
+  useQueue: true
   database-access-type: jdbc
   scheduler:
     enable: true
@@ -15,15 +16,17 @@ app:
     max-attempts: 3
     retry-status-codes: 500, 502, 503, 504
     type: exponential
-#   constant:
-#      back-off-period-millis: 1000
-#    linear:
-#      initial-interval-millis: 1000
-#      max-interval-millis: 5000
     exponential:
       initial-interval-millis: 1000
       multiplier: 2
       max-interval-millis: 100000
+  kafka-info:
+    servers: ${DOCKER_HOST_IP:127.0.0.1}:9092,${DOCKER_HOST_IP:127.0.0.1}:9093
+    topic:
+      name: updates
+      partitions: 2
+      replicas: 2
+
 
 springdoc:
   swagger-ui:
@@ -43,6 +46,9 @@ spring:
       - rate-limit-buckets
     caffeine:
       spec: maximumSize=100000,expireAfterAccess=3600s
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
 
 bucket4j:
   enabled: true
@@ -51,12 +57,12 @@ bucket4j:
       url: .*
       http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You sent too many requests. Wait several minutes\" }"
       rate-limits:
-      - cache-key: "@ipCheckerService.getClientIP(#this)"
-        bandwidths:
-        - capacity: 5
-          time: 1
-          unit: minutes
-          refill-speed: interval
+        - cache-key: "@ipCheckerService.getClientIP(#this)"
+          bandwidths:
+            - capacity: 5
+              time: 1
+              unit: minutes
+              refill-speed: interval
 
 
 
